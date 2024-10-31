@@ -1,3 +1,4 @@
+'use strict';
 const gameFieldHtml = document.getElementById('game-field');
 const gameFieldMatrix = [
 	[1, 2, 3],
@@ -6,18 +7,22 @@ const gameFieldMatrix = [
 ];
 let activeAction = 'x'; // initial value
 
-// generate html field
-for (let i = 1; i < 10; i++) {
-	const fieldCell = document.createElement('div');
-	fieldCell.className = 'field-cell';
-	fieldCell.id = i;
+gameFieldMatrix.forEach((row, rowIndex) => {
+	row.forEach((column, columnIndex) => {
+		const fieldCell = document.createElement('div');
+		fieldCell.className = 'field-cell';
+		fieldCell.id = column;
 
-	fieldCell.addEventListener('click', () => {
-		// find element by index and replace it after click
-		gameFieldMatrix.forEach(row => {
-			const index = row.indexOf(i);
-			if (index != -1) {
-				row[index] = activeAction;
+		fieldCell.addEventListener('click', () => {
+			if (column != 'o' && column != 'x') {
+				column = activeAction;
+				console.log(`coordinates: ${rowIndex} ${columnIndex}`);
+				if ((rowIndex + columnIndex) % 2 == 0 || rowIndex + columnIndex == 0) {
+					console.log('можно провести диагональ');
+				} else {
+					console.log('диагональ провести нельзя');
+				}
+				row[columnIndex] = activeAction;
 				const actionImg = document.createElement('img');
 				actionImg.className = 'action';
 				if (activeAction == 'x') {
@@ -29,10 +34,14 @@ for (let i = 1; i < 10; i++) {
 				}
 				fieldCell.appendChild(actionImg);
 			}
+			console.log(gameFieldMatrix);
 			return;
 		});
-		console.log(gameFieldMatrix);
+		gameFieldHtml.appendChild(fieldCell);
 	});
+});
 
-	gameFieldHtml.appendChild(fieldCell);
-}
+const Cell = initialValue => {
+	this.initialValue = initialValue;
+	this.value = initialValue;
+};

@@ -18,7 +18,7 @@ main {
 	width: 51vmin;
 	height: 51vmin;
 	display: grid;
-	grid-template-columns: repeat(3, 1fr); /* 17vmin */
+	grid-template-columns: repeat(3, 1fr);
 	grid-template-rows: repeat(3, 1fr);
 	gap: 1vmin;
 	box-sizing: border-box;
