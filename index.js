@@ -13,7 +13,7 @@ gameFieldMatrix.forEach((row, rowIndex) => {
 		fieldCell.className = 'field-cell';
 		fieldCell.id = column;
 
-		fieldCell.addEventListener('click', () => {
+		fieldCell.addEventListener('mousedown', () => {
 			if (column != 'o' && column != 'x') {
 				column = activeAction;
 				console.log(`coordinates: ${rowIndex} ${columnIndex}`);
