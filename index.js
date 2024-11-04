@@ -11,6 +11,37 @@ const gameFieldMatrix = [
 const init = () => {
 	let activeAction = 'x'; // initial value
 	activeActionHtml.innerText = activeAction;
+
+	const checkVerticalWin = columnIndex => {
+		for (let i = 0; i < gameFieldMatrix.length; i++) {
+			if (gameFieldMatrix[i][columnIndex] != activeAction) return false;
+		}
+		return true;
+	};
+
+	const checkHorizontalWin = rowIndex => {
+		for (let i = 0; i < gameFieldMatrix[rowIndex].length; i++) {
+			if (gameFieldMatrix[rowIndex][i] != activeAction) return false;
+		}
+		return true;
+	};
+
+	const checkDiagonalWin = (rowIndex, columnIndex) => {
+		// condition works only for a 3x3 field
+		if ((rowIndex + columnIndex) % 2 == 0) {
+			for (let i = 0; i < gameFieldMatrix.length; i++) {
+				const abs = Math.abs(i - gameFieldMatrix.length + 1);
+				if (
+					gameFieldMatrix[i][i] != activeAction &&
+					gameFieldMatrix[i][abs] != activeAction
+				)
+					return false;
+			}
+			return true;
+		}
+		return false;
+	};
+
 	gameFieldMatrix.forEach((row, rowIndex) => {
 		row.forEach((column, columnIndex) => {
 			const fieldCell = document.createElement('div');
@@ -19,17 +50,18 @@ const init = () => {
 
 			fieldCell.addEventListener('mousedown', () => {
 				if (column != 'o' && column != 'x') {
-					column = activeAction;
 					console.log(`coordinates: ${rowIndex} ${columnIndex}`);
-					if (
-						(rowIndex + columnIndex) % 2 == 0 ||
-						rowIndex + columnIndex == 0
-					) {
-						console.log('можно провести диагональ');
-					} else {
-						console.log('диагональ провести нельзя');
-					}
 					row[columnIndex] = activeAction;
+					column = activeAction;
+
+					if (
+						checkVerticalWin(columnIndex) ||
+						checkHorizontalWin(rowIndex) ||
+						checkDiagonalWin(rowIndex, columnIndex) // bug
+					) {
+						console.log(`${activeAction} won`);
+					}
+
 					const actionImg = document.createElement('img');
 					actionImg.className = 'action';
 					if (activeAction == 'x') {
