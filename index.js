@@ -7,9 +7,10 @@ const gameFieldMatrix = [
 	[4, 5, 6],
 	[7, 8, 9],
 ];
+let isGameRunning = true;
 
 const init = () => {
-	let activeAction = 'x'; // initial value
+	let activeAction = 'x';
 	activeActionHtml.innerText = activeAction;
 
 	const checkVerticalWin = columnIndex => {
@@ -27,17 +28,24 @@ const init = () => {
 	};
 
 	const checkDiagonalWin = (rowIndex, columnIndex) => {
-		// condition works only for a 3x3 field
-		if ((rowIndex + columnIndex) % 2 == 0) {
+		const coordinatesSum = rowIndex + columnIndex;
+		if (
+			coordinatesSum % 2 == 0 ||
+			coordinatesSum == gameFieldMatrix.length - 1
+		) {
+			let isWin1 = true;
+			let isWin2 = true;
+
 			for (let i = 0; i < gameFieldMatrix.length; i++) {
+				if (gameFieldMatrix[i][i] != activeAction) {
+					isWin1 = false;
+				}
 				const abs = Math.abs(i - gameFieldMatrix.length + 1);
-				if (
-					gameFieldMatrix[i][i] != activeAction &&
-					gameFieldMatrix[i][abs] != activeAction
-				)
-					return false;
+				if (gameFieldMatrix[i][abs] != activeAction) {
+					isWin2 = false;
+				}
 			}
-			return true;
+			return isWin1 || isWin2;
 		}
 		return false;
 	};
@@ -49,33 +57,38 @@ const init = () => {
 			fieldCell.id = column;
 
 			fieldCell.addEventListener('mousedown', () => {
-				if (column != 'o' && column != 'x') {
-					console.log(`coordinates: ${rowIndex} ${columnIndex}`);
-					row[columnIndex] = activeAction;
-					column = activeAction;
+				if (isGameRunning) {
+					if (column != 'o' && column != 'x') {
+						row[columnIndex] = activeAction;
+						column = activeAction;
+						const actionImg = document.createElement('img');
+						actionImg.className = 'action';
+						if (activeAction == 'x') {
+							actionImg.src = './images/cross.svg';
+						} else {
+							actionImg.src = './images/zero.svg';
+						}
 
-					if (
-						checkVerticalWin(columnIndex) ||
-						checkHorizontalWin(rowIndex) ||
-						checkDiagonalWin(rowIndex, columnIndex) // bug
-					) {
-						console.log(`${activeAction} won`);
-					}
+						if (
+							checkVerticalWin(columnIndex) ||
+							checkHorizontalWin(rowIndex) ||
+							checkDiagonalWin(rowIndex, columnIndex)
+						) {
+							activeActionHtml.innerText = `${activeAction} won`;
+							activeActionHtml.style.color = '#cd5c5c';
 
-					const actionImg = document.createElement('img');
-					actionImg.className = 'action';
-					if (activeAction == 'x') {
-						actionImg.src = './images/cross.svg';
-						activeAction = 'o';
-					} else {
-						actionImg.src = './images/zero.svg';
-						activeAction = 'x';
+							isGameRunning = false;
+						} else {
+							if (activeAction == 'x') {
+								activeAction = 'o';
+							} else {
+								activeAction = 'x';
+							}
+							activeActionHtml.innerText = activeAction;
+						}
+						fieldCell.appendChild(actionImg);
 					}
-					activeActionHtml.innerText = activeAction;
-					fieldCell.appendChild(actionImg);
 				}
-				console.log(gameFieldMatrix);
-				return;
 			});
 			gameFieldHtml.appendChild(fieldCell);
 		});
@@ -84,6 +97,8 @@ const init = () => {
 
 const reset = () => {
 	let counter = 1;
+	isGameRunning = true;
+	activeActionHtml.style.color = '#000000';
 	for (let i = 0; i < gameFieldMatrix.length; i++) {
 		for (let j = 0; j < gameFieldMatrix[i].length; j++) {
 			const actionImg = document.getElementById(counter);
