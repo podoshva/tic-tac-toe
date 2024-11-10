@@ -14,6 +14,7 @@ const init = () => {
 	activeActionHtml.innerText = activeAction;
 
 	const checkVerticalWin = columnIndex => {
+		// this algorithm works on all sizes of fields
 		for (let i = 0; i < gameFieldMatrix.length; i++) {
 			if (gameFieldMatrix[i][columnIndex] != activeAction) return false;
 		}
@@ -21,6 +22,7 @@ const init = () => {
 	};
 
 	const checkHorizontalWin = rowIndex => {
+		// this algorithm works on all sizes of fields
 		for (let i = 0; i < gameFieldMatrix[rowIndex].length; i++) {
 			if (gameFieldMatrix[rowIndex][i] != activeAction) return false;
 		}
@@ -28,6 +30,7 @@ const init = () => {
 	};
 
 	const checkDiagonalWin = (rowIndex, columnIndex) => {
+		// and this algorithm also works on all sizes of fields :)
 		const coordinatesSum = rowIndex + columnIndex;
 		if (
 			coordinatesSum % 2 == 0 ||
@@ -40,8 +43,8 @@ const init = () => {
 				if (gameFieldMatrix[i][i] != activeAction) {
 					isWin1 = false;
 				}
-				const abs = Math.abs(i - gameFieldMatrix.length + 1);
-				if (gameFieldMatrix[i][abs] != activeAction) {
+				const absColumnIndex = Math.abs(i - gameFieldMatrix.length + 1);
+				if (gameFieldMatrix[i][absColumnIndex] != activeAction) {
 					isWin2 = false;
 				}
 			}
@@ -52,6 +55,7 @@ const init = () => {
 
 	gameFieldMatrix.forEach((row, rowIndex) => {
 		row.forEach((column, columnIndex) => {
+			// creating fieldCell elements
 			const fieldCell = document.createElement('div');
 			fieldCell.className = 'field-cell';
 			fieldCell.id = column;
@@ -68,7 +72,7 @@ const init = () => {
 						} else {
 							actionImg.src = './images/zero.svg';
 						}
-
+						// checking of win
 						if (
 							checkVerticalWin(columnIndex) ||
 							checkHorizontalWin(rowIndex) ||
@@ -96,18 +100,19 @@ const init = () => {
 };
 
 const reset = () => {
+	// reset all game values
 	let counter = 1;
 	isGameRunning = true;
 	activeActionHtml.style.color = '#000000';
 	for (let i = 0; i < gameFieldMatrix.length; i++) {
+		// deleting fieldCell elements
 		for (let j = 0; j < gameFieldMatrix[i].length; j++) {
-			const actionImg = document.getElementById(counter);
-			actionImg.remove();
+			const fieldCell = document.getElementById(counter);
+			fieldCell.remove();
 			gameFieldMatrix[i][j] = counter;
 			counter++;
 		}
 	}
-	init();
 };
 
 init();
@@ -115,3 +120,5 @@ init();
 resetButtonHtml.addEventListener('click', () => {
 	reset();
 });
+
+// thanks for reading
